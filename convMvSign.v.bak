@@ -1,0 +1,63 @@
+module SignalParsed(
+	dataReg,
+	lcd_write_data,
+	lleft,
+	rright,
+	rotate
+);
+
+input [7:0] dataReg;
+input [7:0] lcd_write_data;
+output reg [7:0] lleft;
+output reg [7:0] rright;
+output reg [7:0] rotate;
+
+
+/// wire ///
+wire signed [31:0] Rdata;
+reg[7:0] left_reg;
+reg[7:0] right_reg;
+reg[7:0] rotate_reg;
+
+assign Rdata = dataReg;
+
+/// initial ///
+initial begin
+	left_reg <= 0;
+	right_reg <= 0;
+	rotate_reg <= 0;
+	lleft <= 0;
+	rright <= 0;
+	rotate <= 0;
+end
+
+
+
+/// judge ///
+
+always @(dataReg or lcd_write_data)
+	begin
+		if(lcd_write_data == 97)begin
+			if(Rdata > left_reg)begin
+				lleft = left_reg - Rdata;
+				left_reg = Rdata;
+			end
+		end
+		
+		else if(lcd_write_data == 100)begin
+			if(Rdata > right_reg)begin
+				rright = right_reg - Rdata;
+				right_reg = Rdata;
+			end
+		end
+		else if(lcd_write_data == 119)begin
+			if(Rdata > rotate_reg)begin
+				rotate = rotate_reg - Rdata;
+				rotate_reg = Rdata;
+			end
+		end
+	end
+	
+
+
+endmodule
